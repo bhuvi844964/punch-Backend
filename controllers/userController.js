@@ -161,7 +161,7 @@ module.exports.getForgotPassword = async function (req, res) {
     user.resetTokenExpiration = Date.now() + 3600000; // 1 hour
     await user.save();
 
-    const resetUrl = `http://localhost:3000/reset-password?token=${resetToken}`;
+    const resetUrl = `https://punch-backend.up.railway.app/reset-password?token=${resetToken}`;
     const mailOptions = {
       from:'bhuvi844964@gmail.com',
       to: email,
