@@ -29,10 +29,6 @@ const userSchema = new mongoose.Schema(
     otp: {
       type: String,
     },
-    // profileImage: {
-    //   type : String,
-    //   required: true,
-    // },
     Date: {
       type:String
   },
