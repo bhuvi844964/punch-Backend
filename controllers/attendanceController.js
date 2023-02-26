@@ -21,7 +21,7 @@ module.exports.attendance = async function (req, res) {
 
     let existingPunchIn = await attendanceModel.findOne({ PunchIn });
     
-     if (existingPunchIn) {
+     if (!existingPunchIn) {
       return res.status(400).send({ status: false, message: "Already PunchIn" });
     }
     
