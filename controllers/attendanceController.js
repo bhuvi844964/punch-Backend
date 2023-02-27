@@ -6,6 +6,12 @@ module.exports.attendance = async function (req, res) {
     let data = req.body;
     let { userId, Date, PunchIn, PunchOut, session, longitude, latitude } = data;
 
+    let existingPunchIn = await attendanceModel.findOne({ PunchIn:PunchIn}).lean();
+   
+    if (existingPunchIn) {
+      return res.status(400).send({ status: false, message: "Already Punch" });
+    } 
+    
     if (!userId || userId == "") {
       return res.status(400).send({ status: false, message: "Please provide userId" });
     }
@@ -16,12 +22,7 @@ module.exports.attendance = async function (req, res) {
       return res.status(400).send({ status: false, message: "Please provide Date" });
     }
     
-     let existingPunchIn = await attendanceModel.findOne({ PunchIn  });
-    
-     if (!existingPunchIn) {
-      return res.status(400).send({ status: false, message: "Already Punch" });
-    }
-    
+
     if (!PunchIn || PunchIn == "") {
       return res.status(400).send({ status: false, message: "Please provide PunchIn" });
     }
