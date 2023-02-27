@@ -159,7 +159,7 @@ module.exports.getForgotPassword = async function (req, res) {
       from:'bhuvi844964@gmail.com',
       to: email,
       subject: 'Password Reset Request',
-      html: `<p>You requested a password reset for your account.</p><p>Click <a href="${resetUrl}">here</a> to reset your password.</p><p>Your OTP is ${resetToken}. Please use this to reset your password. </p>`,
+      html: `<p>You requested a password reset for your account.</p><p>Your OTP is ${resetToken}. Please use this to reset your password. </p>`,
     };
     await transporter.sendMail(mailOptions);
 
