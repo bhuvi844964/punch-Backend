@@ -1,6 +1,7 @@
 const attendanceModel = require("../models/attendanceModel");
 const mongoose = require("mongoose");
 
+
 module.exports.attendance = async function (req, res) {
   try {
     let data = req.body;
@@ -20,20 +21,11 @@ module.exports.attendance = async function (req, res) {
       return res.status(400).send({ status: false, message: "Please provide PunchIn" });
     }
 
-    
-    
-  
     let existingPunchIn = await attendanceModel.findOne({ userId: userId, Date: Date, PunchIn: PunchIn }).lean();
-    if (existingPunchIn) {
-       if (existingPunchIn.PunchIn) {
+    if (existingPunchIn && existingPunchIn.PunchIn) {
       return res.status(400).send({ status: false, message: "Already punched in" });
-       }
     }
 
-    
-    
-    
-    
     let existingData = await attendanceModel.findOne({ userId: userId, Date: Date });
 
     if (existingData) {
@@ -61,10 +53,16 @@ function time_diff(pIntime, pOuttime) {
   var t2parts = pIntime.split(":");
   var t2cm = Number(t2parts[0]) * 60 + Number(t2parts[1]);
 
-  var hour = Math.floor((t1cm - t2cm) / 60);
-  var min = Math.floor((t1cm - t2cm) % 60);
-  return hour + ":" + min;
+  if (t1cm < t2cm) {
+    t1cm += 24 * 60; // add 24 hours to t1cm to handle negative time differences
+  }
+
+  var diff = t1cm - t2cm;
+  return diff; // return time difference in minutes
 }
+
+    
+
 
 
 
