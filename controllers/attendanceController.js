@@ -46,6 +46,7 @@ module.exports.attendance = async function (req, res) {
   }
 };
 
+
 function time_diff(pIntime, pOuttime) {
   var t1parts = pOuttime.split(":");
   var t1cm = Number(t1parts[0]) * 60 + Number(t1parts[1]);
@@ -53,18 +54,26 @@ function time_diff(pIntime, pOuttime) {
   var t2parts = pIntime.split(":");
   var t2cm = Number(t2parts[0]) * 60 + Number(t2parts[1]);
 
-  if (t1cm < t2cm) {
-    t1cm += 24 * 60; // add 24 hours to t1cm to handle negative time differences
-  }
-
-  var diff = t1cm - t2cm;
-  return diff; // return time difference in minutes
+  var hour = Math.floor((t1cm - t2cm) / 60);
+  var min = Math.floor((t1cm - t2cm) % 60);
+  return hour + ":" + min;
 }
 
-    
 
+// function time_diff(pIntime, pOuttime) {
+//   var t1parts = pOuttime.split(":");
+//   var t1cm = Number(t1parts[0]) * 60 + Number(t1parts[1]);
 
+//   var t2parts = pIntime.split(":");
+//   var t2cm = Number(t2parts[0]) * 60 + Number(t2parts[1]);
 
+//   if (t1cm < t2cm) {
+//     t1cm += 24 * 60; // add 24 hours to t1cm to handle negative time differences
+//   }
+
+//   var diff = t1cm - t2cm;
+//   return diff; // return time difference in minutes
+// }
 
 
   module.exports.getAttendance = async function (req, res) {
