@@ -22,13 +22,15 @@ module.exports.attendance = async function (req, res) {
 
     
     
-    if(!PunchIn == ""){
+  
     let existingPunchIn = await attendanceModel.findOne({ userId: userId, Date: Date, PunchIn: PunchIn }).lean();
     if (existingPunchIn) {
+       if (existingPunchIn.PunchIn) {
       return res.status(400).send({ status: false, message: "Already punched in" });
+       }
     }
 
-    }
+    
     
     
     
