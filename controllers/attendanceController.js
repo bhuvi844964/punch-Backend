@@ -1,7 +1,6 @@
 const attendanceModel = require("../models/attendanceModel");
 const mongoose = require("mongoose");
 
-
 module.exports.attendance = async function (req, res) {
   try {
     let data = req.body;
@@ -17,22 +16,14 @@ module.exports.attendance = async function (req, res) {
       return res.status(400).send({ status: false, message: "Please provide Date" });
     }
     
-    if ( PunchIn == "") {
+    if (!PunchIn || PunchIn == "") {
       return res.status(400).send({ status: false, message: "Please provide PunchIn" });
-    } 
+    }
 
     let existingPunchIn = await attendanceModel.findOne({ userId: userId, Date: Date, PunchIn: PunchIn }).lean();
-    if (existingPunchIn && existingPunchIn.PunchIn != null) {
-      if (existingPunchIn.PunchOut != null) {
-        return res.status(400).send({ status: false, message: "Already punched in and out" });
-      } else {
-        // Allow user to punch out
-        existingPunchIn.PunchOut = PunchOut;
-        existingPunchIn.session = time_diff(existingPunchIn.PunchIn, existingPunchIn.PunchOut);
-        await attendanceModel.findByIdAndUpdate(existingPunchIn._id, existingPunchIn);
-        return res.status(200).send({ status: true, message: existingPunchIn });
-      }
-    }  
+    if (existingPunchIn && existingPunchIn.PunchIn) {
+      return res.status(400).send({ status: false, message: "Already punched in" });
+    }
 
     let existingData = await attendanceModel.findOne({ userId: userId, Date: Date });
 
@@ -40,7 +31,7 @@ module.exports.attendance = async function (req, res) {
       if (existingData.PunchOut) {
         return res.status(400).send({ status: false, message: "PunchOut value already exists in database for this user and date" });
       } else {
-        existingData.PunchOut = PunchOut; 
+        existingData.PunchOut = PunchOut;
         existingData.session = time_diff(existingData.PunchIn, existingData.PunchOut);
         await existingData.save();
         return res.status(200).send({ status: true, message: existingData });
