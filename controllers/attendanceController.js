@@ -6,12 +6,6 @@ module.exports.attendance = async function (req, res) {
     let data = req.body;
     let { userId, Date, PunchIn, PunchOut, session, longitude, latitude } = data;
 
-    let existingPunchIn = await attendanceModel.findOne({ PunchIn:PunchIn}).lean();
-   
-    if (existingPunchIn) {
-      return res.status(400).send({ status: false, message: "Already Punch" });
-    } 
-    
     if (!userId || userId == "") {
       return res.status(400).send({ status: false, message: "Please provide userId" });
     }
@@ -22,21 +16,20 @@ module.exports.attendance = async function (req, res) {
       return res.status(400).send({ status: false, message: "Please provide Date" });
     }
     
-
     if (!PunchIn || PunchIn == "") {
       return res.status(400).send({ status: false, message: "Please provide PunchIn" });
     }
 
-   
-    
-    
+    let existingPunchIn = await attendanceModel.findOne({ userId: userId, Date: Date, PunchIn: PunchIn }).lean();
+    if (existingPunchIn) {
+      return res.status(400).send({ status: false, message: "Already punched in" });
+    }
+
     let existingData = await attendanceModel.findOne({ userId: userId, Date: Date });
 
     if (existingData) {
       if (existingData.PunchOut) {
-        return res
-          .status(400)
-          .send({ status: false, message: "PunchOut value already exists in database for this user and date" });
+        return res.status(400).send({ status: false, message: "PunchOut value already exists in database for this user and date" });
       } else {
         existingData.PunchOut = PunchOut;
         existingData.session = time_diff(existingData.PunchIn, existingData.PunchOut);
@@ -63,6 +56,7 @@ function time_diff(pIntime, pOuttime) {
   var min = Math.floor((t1cm - t2cm) % 60);
   return hour + ":" + min;
 }
+
 
 
 
