@@ -22,8 +22,12 @@ module.exports.attendance = async function (req, res) {
     }
 
     let existingPunchIn = await attendanceModel.findOne({ userId: userId, Date: Date, PunchIn: PunchIn }).lean();
-    if (existingPunchIn && existingPunchIn.PunchIn) {
-      return res.status(400).send({ status: false, message: "Already punched in" });
+    if (existingPunchIn && existingPunchIn.PunchIn != null) {
+      if (existingPunchIn.PunchOut != null) {
+        return res.status(400).send({ status: false, message: "Already punched in and out" });
+      } else {
+        return res.status(400).send({ status: false, message: "Already punched in" });
+      }
     }
 
     let existingData = await attendanceModel.findOne({ userId: userId, Date: Date });
