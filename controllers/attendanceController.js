@@ -26,7 +26,7 @@ module.exports.attendance = async function (req, res) {
 //     }
     
     
-    if (PunchOut >= PunchIn) {
+    if (PunchOut <= PunchIn) {
   return res.status(400).send({ status: false, message: "PunchOut should be greater than PunchIn" });
 }
     
