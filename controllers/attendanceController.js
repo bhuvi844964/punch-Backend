@@ -15,10 +15,17 @@ module.exports.attendance = async function (req, res) {
     if (!Date || Date == "") {
       return res.status(400).send({ status: false, message: "Please provide Date" });
     }
-    if (!PunchIn || PunchIn == "") {
+//     if (!PunchIn || PunchIn == "") {
+//       return res.status(400).send({ status: false, message: "Please provide PunchIn" });
+//     }
+
+    
+    let existingPunch = await attendanceModel.findOne({ userId: userId, Date: Date , PunchIn:PunchIn });
+     if (!existingPunch) {
       return res.status(400).send({ status: false, message: "Please provide PunchIn" });
     }
-
+    
+    
     if (PunchOut <= PunchIn) {
   return res.status(400).send({ status: false, message: "PunchOut should be greater than PunchIn" });
 }
