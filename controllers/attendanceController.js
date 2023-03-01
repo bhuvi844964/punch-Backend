@@ -34,7 +34,7 @@ module.exports.attendance = async function (req, res) {
       }
     } else {
       let savedData = await attendanceModel.create(data);
-      return res.status(201).send({ status: true, message: savedData });
+      return res.status(201).send({ status: true,  message: "punch successful", data: savedData });
     }
   } catch (error) {
     res.status(500).send({ status: false, error: error.message });
