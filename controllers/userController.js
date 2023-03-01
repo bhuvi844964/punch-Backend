@@ -177,6 +177,11 @@ console.log(user)
       return res.status(400).send({ message: 'Invalid or expired token' });
     }
 
+    // const salt = await bcrypt.genSalt(saltRounds);
+    // const hashPassword = await bcrypt.hash(password, salt);
+
+
+
     user.password = newPassword;
     user.resetToken = null;
     user.resetTokenExpiration = null;
