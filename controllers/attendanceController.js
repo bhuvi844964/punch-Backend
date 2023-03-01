@@ -15,9 +15,9 @@ module.exports.attendance = async function (req, res) {
     if (!Date || Date == "") {
       return res.status(400).send({ status: false, message: "Please provide Date" });
     }
-//     if (!PunchIn || PunchIn == "") {
-//       return res.status(400).send({ status: false, message: "Please provide PunchIn" });
-//     }
+    if (!PunchIn || PunchIn == "") {
+      return res.status(400).send({ status: false, message: "Please provide PunchIn" });
+    }
 
     
      let existingPunch = await attendanceModel.findOne({ userId: userId, Date: Date , PunchIn:PunchIn , PunchOut:PunchOut });
