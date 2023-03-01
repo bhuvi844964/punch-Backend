@@ -20,10 +20,10 @@ module.exports.attendance = async function (req, res) {
 //     }
 
     
-    let existingPunch = await attendanceModel.findOne({ userId: userId, Date: Date , PunchIn:PunchIn });
-     if (!existingPunch) {
-      return res.status(400).send({ status: false, message: "Please provide PunchIn" });
-    }
+//     let existingPunch = await attendanceModel.findOne({ userId: userId, Date: Date , PunchIn:PunchIn });
+//      if (!existingPunch) {
+//       return res.status(400).send({ status: false, message: "Please provide PunchIn" });
+//     }
     
     
     if (PunchOut >= PunchIn) {
