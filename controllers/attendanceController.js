@@ -30,7 +30,7 @@ module.exports.attendance = async function (req, res) {
         existingData.PunchOut = PunchOut;
         existingData.session = time_diff(existingData.PunchIn, existingData.PunchOut);
         await existingData.save();
-        return res.status(200).send({ status: true, message: existingData });
+        return res.status(200).send({ status: true,message: "punch successful" , data: existingData });
       }
     } else {
       let savedData = await attendanceModel.create(data);
