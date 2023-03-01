@@ -3,12 +3,11 @@ const userModel = require("../models/userModel");
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
+const saltRounds = 10;
+
 
 let emailRegex = /^[a-z]{1}[a-z0-9._]{1,100}[@]{1}[a-z]{2,15}[.]{1}[a-z]{2,10}$/
-
-
-
-
 
   const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -40,23 +39,26 @@ let emailRegex = /^[a-z]{1}[a-z0-9._]{1,100}[@]{1}[a-z]{2,15}[.]{1}[a-z]{2,10}$/
           message: "Email already exists. Please use a different email."
         });
       }
+      
+      if (!designation || designation == "") {
+        return res.status(400).send({ Status: false, message: "Please provide designation" })  
+      }
+
       if (!password || password == "") {
         return res.status(400).send({ Status: false, message: "Please provide password" })
     }
-      if (!designation || designation == "") {
-        return res.status(400).send({ Status: false, message: "Please provide designation" })
-  
-    }
+    const salt = await bcrypt.genSalt(saltRounds);
+    const hashPassword = await bcrypt.hash(password, salt);
 
       const product = {
         name,
         email,
-        password,
         designation,
+        password:hashPassword,
       };
       const savedProduct = await userModel.create(product);
   
-       res.status(201).send({ status : true, msg: savedProduct })
+       res.status(201).send({ status : true, message: "SignUp successful", msg: savedProduct })
     } catch (error) {
       res.status(500).send({ status: false, error: error.message })
     }
@@ -77,19 +79,13 @@ let emailRegex = /^[a-z]{1}[a-z0-9._]{1,100}[@]{1}[a-z]{2,15}[.]{1}[a-z]{2,10}$/
         return res.status(400).send({ Status: false, message: "Please provide password to login " })
   
       let user = await userModel.findOne({ email });
-    
-      let userPassword = await userModel.findOne({  password });
       if (!user)
-        return res.status(401).send({
-          status: false,
-          message: "email  is not corerct",
-        });
-      if (!userPassword)
-        return res.status(401).send({
-          status: false,
-          message: "password  is not corerct",
-        });
-  
+      return res.status(401).send({status: false, message: "email  is not corerct",});
+
+      let matchPassword = await bcrypt.compare(password, user.password);
+
+      if (!matchPassword) return res.status(401).send({ status: false, msg: "Password is incorrect." });
+
         const token=jwt.sign({
           userId:user._id,
           exp: Math.floor(Date.now() / 1000) + 24 * 60 * 60,

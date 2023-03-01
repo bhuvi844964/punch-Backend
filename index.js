@@ -1,8 +1,6 @@
 const express = require('express');
 const fileUpload = require("express-fileupload")
 
-// const mail = require('./controllers/new')
-// mail.send();
 
 const cors = require("cors");
 require("./db/confige")

@@ -29,20 +29,7 @@ const userSchema = new mongoose.Schema(
     otp: {
       type: String,
     },
-    Date: {
-      type:String
-  },
-  PunchIn: {
-      type:String
-  },
-
-  PunchOut: {
-      type:String
-  },
-  session: {
-      type:String
-  },
-
+   
   },
   { timestamps: true }
 );

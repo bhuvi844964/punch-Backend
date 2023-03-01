@@ -9,6 +9,7 @@
   "author": "bhuvnesh sharma",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^5.1.0",
     "cloudinary": "^1.33.0",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
