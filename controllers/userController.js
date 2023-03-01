@@ -22,7 +22,7 @@ let emailRegex = /^[a-z]{1}[a-z0-9._]{1,100}[@]{1}[a-z]{2,15}[.]{1}[a-z]{2,10}$/
   module.exports.createProfile = async (req, res) => {
     try {
       let data = req.body;
-      let { name, email, designation, password , Date ,PunchIn,PunchOut , session} = data;
+      let { name, email, designation, password } = data;
   
       if (!name || name == "") { 
         return res.status(400).send({ Status: false, message: "Please provide name" })
@@ -53,7 +53,6 @@ let emailRegex = /^[a-z]{1}[a-z0-9._]{1,100}[@]{1}[a-z]{2,15}[.]{1}[a-z]{2,10}$/
         email,
         password,
         designation,
-        Date ,PunchIn,PunchOut , session
       };
       const savedProduct = await userModel.create(product);
   
