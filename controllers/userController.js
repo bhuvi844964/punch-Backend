@@ -166,23 +166,20 @@ module.exports.getForgotPassword = async function (req, res) {
 
 
 
-
 module.exports.resetPassword = async function (req, res) {
   const { token, newPassword } = req.body;
 
   try {
     const user = await userModel.findOne({ resetToken: token, resetTokenExpiration: { $gt: Date.now() } });
-console.log(user)
+    console.log(user)
     if (!user) {
       return res.status(400).send({ message: 'Invalid or expired token' });
     }
 
-    // const salt = await bcrypt.genSalt(saltRounds);
-    // const hashPassword = await bcrypt.hash(password, salt);
+    const saltRounds = 10;
+    const hashPassword = await bcrypt.hash(newPassword, saltRounds);
 
-
-
-    user.password = newPassword;
+    user.password = hashPassword;
     user.resetToken = null;
     user.resetTokenExpiration = null;
     await user.save();
@@ -191,6 +188,7 @@ console.log(user)
   } catch (error) {
     res.status(500).send({ message: 'Internal server error' });
   }
-}; 
+};
+ 
 
 
