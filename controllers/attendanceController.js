@@ -30,11 +30,6 @@ module.exports.attendance = async function (req, res) {
     let existingData = await attendanceModel.findOne({ userId: userId, Date: Date });
 
     if (existingData) {
-      if (existingData.PunchIn) {
-        return res
-          .status(400)
-          .send({ status: false, message: "PunchIn value already exists in database for this user and date" });
-      }
       if (existingData.PunchOut) {
         return res
           .status(400)
