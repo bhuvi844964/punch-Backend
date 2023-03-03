@@ -27,6 +27,10 @@ const attendanceSchema = new mongoose.Schema({
     longitude: {
         type:String
     },
+    isPunchIn: {
+        type:Boolean,
+        default:true
+    },
 
    
 }, { timestamps: true });

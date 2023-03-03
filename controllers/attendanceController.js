@@ -21,6 +21,8 @@ module.exports.attendance = async function (req, res) {
 
   
     let existingData = await attendanceModel.findOne({ userId: userId, Date: Date });
+    
+    // console.log(PunchStatus,"----yyyyyyyyyyyyyyyy-------")
 
     if (existingData) {
       if (existingData.PunchOut) {
@@ -85,6 +87,7 @@ module.exports.attendanceOut = async function (req, res) {
 
     
      let existingPunch = await attendanceModel.findOne({ userId: userId, Date: Date , PunchIn:PunchIn , PunchOut:PunchOut });
+
      if (existingPunch) {     
     if (existingPunch.PunchOut <= existingPunch.PunchIn) {
   return res.status(400).send({ status: false, message: "PunchOut should be greater than PunchIn" });
@@ -92,6 +95,10 @@ module.exports.attendanceOut = async function (req, res) {
     }
     
     let existingData = await attendanceModel.findOne({ userId: userId, Date: Date });
+    let PunchStatus = existingData.isPunchIn;
+    if(PunchStatus == true){
+      PunchStatus= false
+    }
 
     if (existingData) {
       if (existingData.PunchOut) {
@@ -168,11 +175,12 @@ function time_diff(pIntime, pOuttime) {
         if (!mongoose.isValidObjectId(userId))
         return res.status(400).send({ Status: false, message: "Please enter valid userId " })
     
-        let allAttendance = await attendanceModel.find({ userId:userId }).sort({ Date: -1 });
+        let allAttendance = await attendanceModel.findOne({ userId:userId }).sort({ Date: -1 });
         if (!allAttendance) {
             return res.status(400).send({ status: false, message: "attendance not found" })
 
         }
+
         return res.status(200).send({ status: true ,data: allAttendance })
 
     } catch (error) {
