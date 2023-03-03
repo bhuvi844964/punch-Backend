@@ -20,12 +20,12 @@ module.exports.attendance = async function (req, res) {
 //     }
 
     
-     let existingPunch = await attendanceModel.findOne({ userId: userId, Date: Date , PunchIn:PunchIn , PunchOut:PunchOut });
-     if (existingPunch) {     
-    if (existingPunch.PunchOut <= existingPunch.PunchIn) {
-  return res.status(400).send({ status: false, message: "PunchOut should be greater than PunchIn" });
-}
-    }
+//      let existingPunch = await attendanceModel.findOne({ userId: userId, Date: Date , PunchIn:PunchIn , PunchOut:PunchOut });
+//      if (existingPunch) {     
+//     if (existingPunch.PunchOut <= existingPunch.PunchIn) {
+//   return res.status(400).send({ status: false, message: "PunchOut should be greater than PunchIn" });
+// }
+//     }
     
     let existingData = await attendanceModel.findOne({ userId: userId, Date: Date });
 
