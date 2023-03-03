@@ -15,23 +15,87 @@ module.exports.attendance = async function (req, res) {
     if (!Date || Date == "") {
       return res.status(400).send({ status: false, message: "Please provide Date" });
     }
-//     if (!PunchIn || PunchIn == "") {
-//       return res.status(400).send({ status: false, message: "Please provide PunchIn" });
-//     }
+    if (!PunchIn || PunchIn == "") {
+      return res.status(400).send({ status: false, message: "Please provide PunchIn" });
+    }
 
-    
-//      let existingPunch = await attendanceModel.findOne({ userId: userId, Date: Date , PunchIn:PunchIn , PunchOut:PunchOut });
-//      if (existingPunch) {     
-//     if (existingPunch.PunchOut <= existingPunch.PunchIn) {
-//   return res.status(400).send({ status: false, message: "PunchOut should be greater than PunchIn" });
-// }
-//     }
-    
+  
     let existingData = await attendanceModel.findOne({ userId: userId, Date: Date });
 
     if (existingData) {
       if (existingData.PunchOut) {
         return res
+          .status(400)
+          .send({ status: false, message: "PunchOut value already exists in database for this user and date" });
+      }
+      if (existingData.PunchIn) {
+        return res
+          .status(400)
+          .send({ status: false, message: "PunchIn value already exists in database for this user and date" });
+      }
+      else {
+        existingData.PunchOut = PunchOut;
+        existingData.session = time_diff(existingData.PunchIn, existingData.PunchOut);
+        await existingData.save();
+        return res.status(200).send({ status: true,message: "punch successful" , data: existingData });
+      }
+    } else {
+      let savedData = await attendanceModel.create(data);
+      return res.status(201).send({ status: true,  message: "punch successful", data: savedData });
+    }
+  } catch (error) {
+    res.status(500).send({ status: false, error: error.message });
+  }
+};
+
+
+function time_diff(pIntime, pOuttime) {
+  var t1parts = pOuttime.split(":");
+  var t1cm = Number(t1parts[0]) * 60 + Number(t1parts[1]);
+
+  var t2parts = pIntime.split(":");
+  var t2cm = Number(t2parts[0]) * 60 + Number(t2parts[1]);
+
+  var hour = Math.floor((t1cm - t2cm) / 60);
+  var min = Math.floor((t1cm - t2cm) % 60);
+  return hour + ":" + min;
+}
+
+
+
+
+
+module.exports.attendanceOut = async function (req, res) {
+  try {
+    let data = req.body;
+    let { userId, Date, PunchIn, PunchOut, session, longitude, latitude } = data;
+
+    if (!userId || userId == "") {
+      return res.status(400).send({ status: false, message: "Please provide userId" });
+    }
+    if (!mongoose.isValidObjectId(userId)) {
+      return res.status(400).send({ status: false, message: "Please enter valid userId" });
+    }
+    if (!Date || Date == "") {
+      return res.status(400).send({ status: false, message: "Please provide Date" });
+    }
+    if (!PunchOut || PunchOut == "") {
+      return res.status(400).send({ status: false, message: "Please provide PunchOut" });
+    }
+
+    
+     let existingPunch = await attendanceModel.findOne({ userId: userId, Date: Date , PunchIn:PunchIn , PunchOut:PunchOut });
+     if (existingPunch) {     
+    if (existingPunch.PunchOut <= existingPunch.PunchIn) {
+  return res.status(400).send({ status: false, message: "PunchOut should be greater than PunchIn" });
+}
+    }
+    
+    let existingData = await attendanceModel.findOne({ userId: userId, Date: Date });
+
+    if (existingData) {
+      if (existingData.PunchOut) {
+        return res 
           .status(400)
           .send({ status: false, message: "PunchOut value already exists in database for this user and date" });
       }

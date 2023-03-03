@@ -28,6 +28,8 @@ router.post('/reset-password', userController.resetPassword)
 
 router.post("/attendance", attendanceController.attendance)
 
+router.post("/attendanceOut", attendanceController.attendanceOut)
+
 router.get("/getAttendance", attendanceController.getAttendance)
 
 router.get("/getAttendanceById/:userId", attendanceController.getAttendanceById)
