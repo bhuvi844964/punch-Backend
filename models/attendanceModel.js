@@ -12,11 +12,11 @@ const attendanceSchema = new mongoose.Schema({
         type:String
     },
     PunchIn: {
-        type:String
+        type:[String]
     },
 
     PunchOut: {
-        type:String
+        type:[String]
     },
     session: {
         type:String

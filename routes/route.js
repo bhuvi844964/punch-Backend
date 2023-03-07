@@ -24,7 +24,7 @@ router.post('/forgot-password',  userController.getForgotPassword)
 router.post('/reset-password', userController.resetPassword)
 
 
-router.post('/otp', otp.getOtp)
+// router.post('/otp', otp.getOtp)
 
 
 
