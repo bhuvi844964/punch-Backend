@@ -49,21 +49,21 @@ module.exports.attendanceOut = async function (req, res) {
       return res.status(400).send({ status: false, message: "Please provide PunchOut" });
     }
 
-    
     let existingData = await attendanceModel.find({ userId: userId, Date: Date });
-  
 
-    if (existingData) {
-    
-        existingData.PunchOut = PunchOut;
-        existingData.session = time_diff(existingData.PunchIn, existingData.PunchOut);
-        await existingData.save();
-        return res.status(200).send({ status: true,message: "punch successful" , data: existingData });
-      
+
+    if (existingData.length > 0) {
+      for (let i = 0; i < existingData.length; i++) {
+        existingData[i].PunchOut = PunchOut;
+        existingData[i].session = time_diff(existingData[i].PunchIn, existingData[i].PunchOut);
+        await existingData[i].save();
+      }
+      return res.status(200).send({ status: true,message: "PunchOut successful" , data: existingData });
     } else {
       let savedData = await attendanceModel.create(data);
-      return res.status(201).send({ status: true,  message: "punch successful", data: savedData });
+      return res.status(201).send({ status: true,  message: "PunchOut successful", data: savedData });
     }
+    
   } catch (error) {
     res.status(500).send({ status: false, error: error.message });
   }
