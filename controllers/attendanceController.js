@@ -22,25 +22,13 @@ module.exports.attendance = async function (req, res) {
 
     let existingData = await attendanceModel.findOne({ userId:userId });
 
-    // if (existingData) {
-    //   if (existingData.PunchIn) {
-    //     return res
-    //       .status(400)
-    //       .send({ status: false, message: "PunchIn value already exists in database for this user " });
-    //   }
-  
-    // } else {
       let savedData = await attendanceModel.create(data);
       return res.status(201).send({ status: true,  message: "punch successful", data: savedData });
-    // }
+  
   } catch (error) {
     res.status(500).send({ status: false, error: error.message });
   }
 };
-
-
-
-
 
 
 module.exports.attendanceOut = async function (req, res) {
@@ -61,27 +49,26 @@ module.exports.attendanceOut = async function (req, res) {
       return res.status(400).send({ status: false, message: "Please provide PunchOut" });
     }
 
+    
     let existingData = await attendanceModel.findOne({ userId: userId, Date: Date });
+  
 
     if (existingData) {
-      // if (existingData.PunchOut) {
-      //   return res.status(400).send({ status: false, message: "PunchOut value already exists in database for this user and date" });
-      // } else {
+    
         existingData.PunchOut = PunchOut;
         existingData.session = time_diff(existingData.PunchIn, existingData.PunchOut);
         await existingData.save();
-        let nextPunchData = { userId: userId, Date: Date, PunchIn: PunchOut };
-        let savedNextPunchData = await attendanceModel.create(nextPunchData);
-        return res.status(200).send({ status: true, message: "PunchOut successful and next PunchIn created", data: { PunchOut: existingData, PunchIn: savedNextPunchData } });
-      // }
+        return res.status(200).send({ status: true,message: "punch successful" , data: existingData });
+      
     } else {
       let savedData = await attendanceModel.create(data);
-      return res.status(201).send({ status: true,  message: "PunchOut successful", data: savedData });
+      return res.status(201).send({ status: true,  message: "punch successful", data: savedData });
     }
   } catch (error) {
     res.status(500).send({ status: false, error: error.message });
   }
-}; 
+};
+
 
 function time_diff(pIntime, pOuttime) {
   var t1parts = pOuttime.split(":");
@@ -94,6 +81,9 @@ function time_diff(pIntime, pOuttime) {
   var min = Math.floor((t1cm - t2cm) % 60);
   return hour + ":" + min;
 }
+
+
+
 
 
 // function time_diff(pIntime, pOuttime) {
