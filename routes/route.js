@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const userController = require("../controllers/userController")
 const attendanceController = require("../controllers/attendanceController")
+const otp = require("../controllers/otp")
 const cors = require("cors");
  
 router.use(express.json());
@@ -21,6 +22,9 @@ router.get("/getUserById/:userId", userController.getUserById)
 router.post('/forgot-password',  userController.getForgotPassword)
 
 router.post('/reset-password', userController.resetPassword)
+
+
+router.post('/otp', otp.getOtp)
 
 
 

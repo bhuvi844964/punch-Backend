@@ -18,51 +18,68 @@ let emailRegex = /^[a-z]{1}[a-z0-9._]{1,100}[@]{1}[a-z]{2,15}[.]{1}[a-z]{2,10}$/
   });
 
 
+  let lastId = 10;
+  
+  async function generateTechId() {
+    lastId++;
+    const techId = `tech${lastId.toString().padStart(3, '0')}`;
+  
+    const existingUser = await userModel.findOne({ techId });
+    if (existingUser) {
+      return generateTechId();
+    }
+    return techId; 
+  }
+  
   module.exports.createProfile = async (req, res) => {
     try {
-      let data = req.body;
-      let { name, email, designation, password } = data;
+      const data = req.body;
+      const { name, email, designation, password } = data; 
   
       if (!name || name == "") { 
-        return res.status(400).send({ Status: false, message: "Please provide name" })
-    }
+        return res.status(400).send({ status: false, message: "Please provide name" });
+      }
       if (!email || email == "") {
-        return res.status(400).send({ Status: false, message: "Please provide email" })
-    }
-    if (!emailRegex.test(email)) {
-      return res.status(400).send({ Status: false, message: "Please enter valid email" })
-    }
+        return res.status(400).send({ status: false, message: "Please provide email" });
+      }
+      if (!emailRegex.test(email)) {
+        return res.status(400).send({ status: false, message: "Please enter valid email" });
+      }
       let existingUser = await userModel.findOne({ email });
       if (existingUser) {
         return res.status(400).send({
-          Status: false,
+          status: false,
           message: "Email already exists. Please use a different email."
         });
       }
-      
+  
       if (!designation || designation == "") {
-        return res.status(400).send({ Status: false, message: "Please provide designation" })  
+        return res.status(400).send({ status: false, message: "Please provide designation" });
       }
-
+  
       if (!password || password == "") {
-        return res.status(400).send({ Status: false, message: "Please provide password" })
-    }
-    const salt = await bcrypt.genSalt(saltRounds);
-    const hashPassword = await bcrypt.hash(password, salt);
-
-      const product = {
+        return res.status(400).send({ status: false, message: "Please provide password" });
+      }
+  
+      const salt = await bcrypt.genSalt(saltRounds);
+      const hashPassword = await bcrypt.hash(password, salt);
+  
+      const techId = await generateTechId(); 
+      const user = {
+        techId,
         name,
         email,
         designation,
-        password:hashPassword,
+        password: hashPassword,
       };
-      const savedProduct = await userModel.create(product);
+      const savedUser = await userModel.create(user);
   
-       res.status(201).send({ status : true, message: "SignUp successful", msg: savedProduct })
+      res.status(201).send({ status: true, message: "SignUp successful", data: savedUser });
     } catch (error) {
-      res.status(500).send({ status: false, error: error.message })
+      res.status(500).send({ status: false, error: error.message });
     }
   };
+  
   
 
  
@@ -126,21 +143,9 @@ let emailRegex = /^[a-z]{1}[a-z0-9._]{1,100}[@]{1}[a-z]{2,15}[.]{1}[a-z]{2,10}$/
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 module.exports.getUser = async function (req, res) {
   try {
-    let userFound = await userModel.find(req.query).select({ createdAt: 0, updatedAt: 0, __v: 0});
+    let userFound = await userModel.find().select({ createdAt: 0, updatedAt: 0, __v: 0});
     if (userFound.length > 0) {
       res.status(200).send( userFound );
     } else {

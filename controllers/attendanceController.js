@@ -1,4 +1,5 @@
 const attendanceModel = require("../models/attendanceModel");
+const userModel = require('../models/userModel');
 const mongoose = require("mongoose");
 
 module.exports.attendance = async function (req, res) {
@@ -19,11 +20,8 @@ module.exports.attendance = async function (req, res) {
       return res.status(400).send({ status: false, message: "Please provide PunchIn" });
     }
 
-  
     let existingData = await attendanceModel.findOne({ userId: userId, Date: Date });
     
-    // console.log(PunchStatus,"----yyyyyyyyyyyyyyyy-------")
-
     if (existingData) {
       if (existingData.PunchOut) {
         return res
@@ -62,8 +60,6 @@ function time_diff(pIntime, pOuttime) {
   var min = Math.floor((t1cm - t2cm) % 60);
   return hour + ":" + min;
 }
-
-
 
 
 
@@ -151,19 +147,19 @@ function time_diff(pIntime, pOuttime) {
 // }
 
 
-  module.exports.getAttendance = async function (req, res) {
-    try {
-      let attendanceFound = await attendanceModel.find(req.query).select({ createdAt: 0, updatedAt: 0, __v: 0});
-      if (attendanceFound.length > 0) {
-        res.status(200).send( attendanceFound );
-      } else {
-          res.status(404).send({ status: false, message: "No such data found " });
-      }
-    } catch (error) {
-      res.status(500).send({ status: false, error: error.message });
-    }
-  }; 
+module.exports.getAttendance = async function (req, res) {
+  try {
+    let attendanceFound = await attendanceModel.find().populate("userId");
 
+    if (attendanceFound.length > 0) {
+      res.status(200).send(attendanceFound);
+    } else {
+      res.status(404).send({ status: false, message: "No such data found " });
+    }
+  } catch (error) {
+    res.status(500).send({ status: false, error: error.message });
+  }
+};
 
 
 

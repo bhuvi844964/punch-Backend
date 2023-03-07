@@ -1,9 +1,13 @@
 const mongoose = require("mongoose");
+
 const userSchema = new mongoose.Schema(
   {
+    techId: {
+      type: String,
+      unique: true,
+    },
     name: {
       type: String,
-      
     },
     email: {
       type: String,
@@ -15,8 +19,8 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    resetToken: {
-      type: String,
+    resetToken: { 
+      type: String, 
       default: null,
     },
     resetTokenExpiration: {
