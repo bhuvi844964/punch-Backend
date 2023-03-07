@@ -153,7 +153,7 @@ module.exports.getAttendanceById = async function (req, res) {
 
     let allAttendance = await attendanceModel
       .findOne({ userId: userId })
-      .sort({ Date: -1 });
+      .sort({ createdAt: -1 });
     if (!allAttendance) {
       return res
         .status(400)
