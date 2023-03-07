@@ -50,7 +50,7 @@ module.exports.attendanceOut = async function (req, res) {
     }
 
     
-    let existingData = await attendanceModel.findOne({ userId: userId, Date: Date });
+    let existingData = await attendanceModel.find({ userId: userId, Date: Date });
   
 
     if (existingData) {
