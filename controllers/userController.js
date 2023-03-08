@@ -145,7 +145,7 @@ module.exports.login = async function (req, res) {
 
 
 
-module.exports.TechId = async function (req, res) {
+module.exports.TechIdIn = async function (req, res) {
   try {
     let techId = req.body.techId;
 
