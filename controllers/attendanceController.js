@@ -29,7 +29,7 @@ module.exports.attendance = async function (req, res) {
         .send({ status: false, message: 'Please provide PunchIn' });
     }
 
-    let existingData = await attendanceModel.findOne({ userId: userId });
+    // let existingData = await attendanceModel.findOne({ userId: userId });
 
     let savedData = await attendanceModel.create(data);
     return res

@@ -5,6 +5,9 @@ const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
+const attendanceModel = require('../models/attendanceModel');
+
+
 
 let emailRegex =
   /^[a-z]{1}[a-z0-9._]{1,100}[@]{1}[a-z]{2,15}[.]{1}[a-z]{2,10}$/;
@@ -153,14 +156,42 @@ module.exports.TechId = async function (req, res) {
     }
 
     let user = await userModel.findOne({ techId });
+    
     if (!user)
       return res
         .status(401)
         .send({ status: false, message: "techId  is not corerct" });
 
-    res
-      .status(200)
-      .send({ status: true, message: " login successful", user: user });
+        let data = req.body;
+        let { userId, Date, PunchIn, PunchOut, session, longitude, latitude } =  data;
+      
+        if (!Date || Date == '') {
+          return res
+            .status(400)
+            .send({ status: false, message: 'Please provide Date' });
+        }
+        if (!PunchIn || PunchIn == '') {
+          return res
+            .status(400)
+            .send({ status: false, message: 'Please provide PunchIn' });
+        }
+  
+        let obj = {
+
+          userId : user._id , 
+          Date, 
+          PunchIn, 
+          PunchOut,
+           session,
+            longitude,
+             latitude 
+        }
+        let savedData = await attendanceModel.create(obj);
+        return res
+          .status(201)
+          .send({ status: true, message: 'punch successful', data: savedData ,user: user });
+
+   
   } catch (error) {
     res.status(500).send({ status: false, error: error.message });
   }
