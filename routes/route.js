@@ -15,6 +15,8 @@ router.post("/registration" ,  userController.createProfile)
 
 router.post("/login", userController.login)
 
+router.post("/techId", userController.TechId)
+
 router.get("/getUser", userController.getUser)
 
 router.get("/getUserById/:userId", userController.getUserById)
