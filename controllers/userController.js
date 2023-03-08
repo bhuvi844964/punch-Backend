@@ -118,31 +118,6 @@ let emailRegex = /^[a-z]{1}[a-z0-9._]{1,100}[@]{1}[a-z]{2,15}[.]{1}[a-z]{2,10}$/
 
 
 
-  module.exports.getAttendanceById = async function (req, res) {
-    try {
-        const userId = req.params.userId
-
-        if (!mongoose.isValidObjectId(userId))
-        return res.status(400).send({ Status: false, message: "Please enter valid userId " })
-    
-        let allAttendance = await attendanceModel.find({ userId:userId }).sort({ Date: -1 });
-        if (!allAttendance) {
-            return res.status(400).send({ status: false, message: "attendance not found" })
-
-        }
-
-        return res.status(200).send({ status: true ,data: allAttendance })
-
-    } catch (error) {
-      res.status(500).send({ status: false, error: error.message });
-    }
-
-}
-
-
-
-
-
 module.exports.getUser = async function (req, res) {
   try {
     let userFound = await userModel.find().select({ createdAt: 0, updatedAt: 0, __v: 0});

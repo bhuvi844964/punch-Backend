@@ -116,7 +116,7 @@ function time_diff(pIntime, pOuttime) {
   var t2cm = Number(t2parts[0]) * 60 + Number(t2parts[1]);
 
   if (t1cm < t2cm) {
-    t1cm += 24 * 60; // add 24 hours to t1cm to handle negative time differences
+    t1cm += 24 * 60; 
   }
   var hour = Math.floor((t1cm - t2cm) / 60);
   var min = Math.floor((t1cm - t2cm) % 60);
@@ -152,7 +152,7 @@ module.exports.getAttendanceById = async function (req, res) {
         .send({ Status: false, message: 'Please enter valid userId ' });
 
     let allAttendance = await attendanceModel
-      .findOne({ userId: userId })
+      .findOne({ userId: userId }).populate('userId').select({__v:0})
       .sort({ createdAt: -1 });
     if (!allAttendance) {
       return res
@@ -164,7 +164,6 @@ module.exports.getAttendanceById = async function (req, res) {
     res.status(500).send({ status: false, error: error.message });
   }
 };
-
 
 
 
