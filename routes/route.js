@@ -15,7 +15,9 @@ router.post("/registration" ,  userController.createProfile)
 
 router.post("/login", userController.login)
 
-router.post("/techId", userController.TechIdIn)
+router.post("/techIdIn", userController.TechIdIn)
+
+router.post("/techIdOut", userController.TechIdOut)
 
 router.get("/getUser", userController.getUser)
 
@@ -24,10 +26,6 @@ router.get("/getUserById/:userId", userController.getUserById)
 router.post('/forgot-password',  userController.getForgotPassword)
 
 router.post('/reset-password', userController.resetPassword)
-
-
-// router.post('/otp', otp.getOtp)
-
 
 
 
