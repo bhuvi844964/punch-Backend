@@ -221,24 +221,53 @@ module.exports.TechIdOut = async function (req, res) {
             .status(400)
             .send({ status: false, message: 'Please provide Date' });
         }
+
         if (!PunchOut || PunchOut == '') {
           return res
             .status(400)
             .send({ status: false, message: 'Please provide PunchOut' });
         }
-        let obj = {
-          userId : user._id , 
-          Date, 
-          PunchIn, 
-          PunchOut,
-          session,
-          longitude,
-          latitude 
-        }
-        let savedData = await attendanceModel.create(obj);
-        return res
-          .status(201)
-          .send({ status: true, message: 'punchIn successful', data: savedData ,user: user });
+
+        let existingData = await attendanceModel.find({
+          userId: user._id,
+          PunchOut: { $exists: true  },
+          $or: [{ PunchOut: '' }]
+        });
+          
+console.log(existingData);   
+
+if (existingData.length > 0) {
+  for (let i = 0; i < existingData.length; i++) {
+    existingData[i].PunchOut = PunchOut;
+    existingData[i].session = time_diff(
+      existingData[i].PunchIn,
+      existingData[i].PunchOut
+    );
+    await existingData[i].save();
+  }
+  return res
+    .status(200)
+    .send({
+      status: true,
+      message: 'PunchOut successful',
+      data: existingData,
+    });
+}else{
+
+  let obj = {
+    userId : user._id , 
+    Date, 
+    PunchIn, 
+    PunchOut,
+    session,
+    longitude,
+    latitude 
+  }
+  let savedData = await attendanceModel.create(obj);
+  return res
+    .status(201)
+    .send({ status: true, message: 'punchOut successful', data: savedData ,user: user });
+}
 
   } catch (error) {
     res.status(500).send({ status: false, error: error.message });
@@ -247,21 +276,20 @@ module.exports.TechIdOut = async function (req, res) {
 
 
 
+function time_diff(pIntime, pOuttime) {
+  var t1parts = pOuttime.split(':');
+  var t1cm = Number(t1parts[0]) * 60 + Number(t1parts[1]);
 
-// function time_diff(pIntime, pOuttime) {
-//   var t1parts = pOuttime.split(':');
-//   var t1cm = Number(t1parts[0]) * 60 + Number(t1parts[1]);
+  var t2parts = pIntime.split(':');
+  var t2cm = Number(t2parts[0]) * 60 + Number(t2parts[1]);
 
-//   var t2parts = pIntime.split(':');
-//   var t2cm = Number(t2parts[0]) * 60 + Number(t2parts[1]);
-
-//   if (t1cm < t2cm) {
-//     t1cm += 24 * 60; 
-//   }
-//   var hour = Math.floor((t1cm - t2cm) / 60);
-//   var min = Math.floor((t1cm - t2cm) % 60);
-//   return hour + ':' + min;
-// }
+  if (t1cm < t2cm) {
+    t1cm += 24 * 60; 
+  }
+  var hour = Math.floor((t1cm - t2cm) / 60);
+  var min = Math.floor((t1cm - t2cm) % 60);
+  return hour + ':' + min;
+}
 
 
 
