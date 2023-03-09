@@ -175,6 +175,22 @@ module.exports.TechIdIn = async function (req, res) {
             .status(400)
             .send({ status: false, message: 'Please provide PunchIn' });
         }
+
+        let existingData = await attendanceModel.find({
+          userId: user._id,
+          PunchIn: { $exists: true  },
+          $or: [{ PunchOut: ''  }]
+        });
+ 
+console.log(existingData)
+
+
+        if (existingData.length) {
+          return res
+            .status(400)
+            .send({ status: false, message: 'Please provide PunchOut' });
+        }
+
         let obj = {
           userId : user._id , 
           Date, 
