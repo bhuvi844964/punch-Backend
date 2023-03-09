@@ -243,48 +243,61 @@ module.exports.TechIdOut = async function (req, res) {
             .status(400)
             .send({ status: false, message: 'Please provide PunchOut' });
         }
-
-        let existingData = await attendanceModel.find({
+        let existing = await attendanceModel.find({
           userId: user._id,
-          PunchOut: { $exists: true  },
+          PunchIn: { $exists: true  },
           $or: [{ PunchOut: '' }]
         });
-          
-console.log(existingData);   
 
-if (existingData.length > 0) {
-  for (let i = 0; i < existingData.length; i++) {
-    existingData[i].PunchOut = PunchOut;
-    existingData[i].session = time_diff(
-      existingData[i].PunchIn,
-      existingData[i].PunchOut
-    );
-    await existingData[i].save();
+        if (existing.length) {
+
+          let existingData = await attendanceModel.find({
+            userId: user._id,
+            PunchOut: { $exists: true  },
+            $or: [{ PunchOut: '' }]
+          });
+            
+  console.log(existingData);   
+  
+  if (existingData.length > 0) {
+    for (let i = 0; i < existingData.length; i++) {
+      existingData[i].PunchOut = PunchOut;
+      existingData[i].session = time_diff(
+        existingData[i].PunchIn,
+        existingData[i].PunchOut
+      );
+      await existingData[i].save();
+    }
+    return res
+      .status(200)
+      .send({
+        status: true,
+        message: 'PunchOut successful',
+        data: existingData,
+      });
+  }else{
+  
+    let obj = {
+      userId : user._id , 
+      Date, 
+      PunchIn, 
+      PunchOut,
+      session,
+      longitude,
+      latitude 
+    }
+    let savedData = await attendanceModel.create(obj);
+    return res
+      .status(201)
+      .send({ status: true, message: 'punchOut successful', data: savedData ,user: user });
   }
-  return res
-    .status(200)
-    .send({
-      status: true,
-      message: 'PunchOut successful',
-      data: existingData,
-    });
-}else{
+  }else{
 
-  let obj = {
-    userId : user._id , 
-    Date, 
-    PunchIn, 
-    PunchOut,
-    session,
-    longitude,
-    latitude 
+    return res
+    .status(400)
+    .send({ status: false, message: 'Please provide PunchIn' });
+
   }
-  let savedData = await attendanceModel.create(obj);
-  return res
-    .status(201)
-    .send({ status: true, message: 'punchOut successful', data: savedData ,user: user });
-}
-
   } catch (error) {
     res.status(500).send({ status: false, error: error.message });
   }
