@@ -71,9 +71,11 @@ module.exports.attendanceOut = async function (req, res) {
     let existingData = await attendanceModel.find({
       userId: userId,
       Date: Date,
-      PunchOut: { $exists: false }
+      PunchOut: { $exists: true },
+      $or: [{ PunchOut: '' }]
+
     });
-    console.log(existingData.PunchOut);
+    console.log(existingData);
 
     if (existingData.length > 0) {
       for (let i = 0; i < existingData.length; i++) {
