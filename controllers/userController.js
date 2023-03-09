@@ -195,7 +195,6 @@ console.log(existingData)
           userId : user._id , 
           Date, 
           PunchIn, 
-          PunchOut,
           session,
           longitude,
           latitude 

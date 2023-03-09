@@ -16,7 +16,8 @@ const attendanceSchema = new mongoose.Schema({
     },
 
     PunchOut: {
-        type:String
+        type:String,
+        default:""
     },
     session: {
         type:String
