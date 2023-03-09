@@ -5,6 +5,7 @@ const userSchema = new mongoose.Schema(
     techId: {
       type: String,
       unique: true,
+      lowercase: true,
     },
     name: {
       type: String,
